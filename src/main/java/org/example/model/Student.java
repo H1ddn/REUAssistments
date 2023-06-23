@@ -9,7 +9,7 @@ package org.example.model;
 public class Student {
 
     // Unique Student ID
-    private long id;
+    private Long id;
 
     // Student's ID
     private String name;
@@ -17,11 +17,11 @@ public class Student {
     // Student GPA (X.XX)
     private double gpa;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
