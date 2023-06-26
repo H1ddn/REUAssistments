@@ -15,7 +15,7 @@ public class Student {
     private String name;
 
     // Student GPA (X.XX)
-    private double gpa;
+    private Double gpa;
 
     public Long getId() {
         return id;
@@ -33,11 +33,11 @@ public class Student {
         this.name = name;
     }
 
-    public double getGpa() {
+    public Double getGpa() {
         return gpa;
     }
 
-    public void setGpa(double gpa) {
+    public void setGpa(Double gpa) {
         this.gpa = gpa;
     }
 
