@@ -13,6 +13,8 @@ import java.util.List;
  *  Student Controller. Edits student objects using API calls
  *
  * @author Ethan Cruz
+ * @author Daniel Krupp
+ *
  */
 @RestController
 @RequestMapping("/student")
@@ -65,6 +67,7 @@ public class StudentController {
         }
 
         if(student.getName() != null) existingUser.setName(student.getName());
+        if(student.getGpa() != null) existingUser.setGpa(student.getGpa());
         if(student.getId() != null) existingUser.setId(student.getId());
 
         return ResponseEntity.ok(existingUser);
@@ -73,11 +76,13 @@ public class StudentController {
     // create any number of students using POST /student
     @PostMapping("")
     public ResponseEntity<?> createUser(
-            @RequestBody final Student student
+            @RequestBody List<Student> studentList
     ) {
-        studentStore.addUser(student);
-
-        return ResponseEntity.created(URI.create("/user/" + student.getId())).build();
+        for (Student stu: studentList)
+        {
+            studentStore.addUser(stu);
+        }
+        return ResponseEntity.created(URI.create("/user/" + studentList.get(0).getId())).build();
     }
 
 
