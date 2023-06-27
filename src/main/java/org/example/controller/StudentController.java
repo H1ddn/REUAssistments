@@ -40,7 +40,7 @@ public class StudentController {
             @PathVariable("id") final Long id
     ) {
         final Student student = studentStore.getUsers().stream()
-                .filter(u -> u.getId() == id)
+                .filter(u -> u.getId().equals(id))
                 .findFirst()
                 .orElse(null);
 
@@ -59,9 +59,10 @@ public class StudentController {
     ) {
         boolean success = studentStore.removeStudent(id,pw);
 
-        if(success == false) {
-            return ResponseEntity.notFound().build();
-        }
+        System.out.println(success);
+//        if(success == false) {
+//            return ResponseEntity.notFound().build();
+//        }
 
         return ResponseEntity.ok(id);
     }

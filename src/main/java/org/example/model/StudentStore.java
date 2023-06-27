@@ -25,7 +25,7 @@ public final class StudentStore {
         Long prev = 0L;
         for (Student stu: students)
         {
-            if(stu.getId() - prev >= 1L) {
+            if(stu.getId() - prev > 1L) {
                 return prev + 1L;
             }
             prev = stu.getId();
@@ -55,7 +55,7 @@ public final class StudentStore {
         Iterator<Student> i = students.iterator();
         while (i.hasNext()){
             Student stu = i.next();
-            if(stu.getId() == id && stu.getPw() == password){
+            if(stu.getId().equals(id) && stu.getPw().equals(password)){
                 i.remove();
                 return true;
             }
