@@ -42,7 +42,7 @@ public final class StudentStore {
         }
 
         student.setId(nextId);
-        this.students.add(student);
+        this.students.add((int) nextId-1, student);
     }
 
     /**

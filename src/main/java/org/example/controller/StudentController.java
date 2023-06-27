@@ -74,7 +74,7 @@ public class StudentController {
             @RequestBody final Student student
     ) {
         final Student existingUser = studentStore.getUsers().stream()
-                .filter(u -> u.getId() == id)
+                .filter(u -> u.getId().equals(id))
                 .findFirst()
                 .orElse(null);
 
