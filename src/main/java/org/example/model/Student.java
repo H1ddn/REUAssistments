@@ -17,6 +17,9 @@ public class Student {
     // Student GPA (X.XX)
     private Double gpa;
 
+    // Student password
+    private String pw;
+
     public Long getId() {
         return id;
     }
@@ -39,6 +42,14 @@ public class Student {
 
     public void setGpa(Double gpa) {
         this.gpa = gpa;
+    }
+
+    public String getPw() {
+        return pw;
+    }
+
+    public void setPw(final String pw) {
+        this.pw = pw;
     }
 
 }

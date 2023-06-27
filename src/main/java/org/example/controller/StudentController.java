@@ -51,6 +51,21 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
+    // removed student with their ID equal to {id}. Checks for password.
+    @DeleteMapping("/{id}/{pw}")
+    public ResponseEntity<Long> getStudent(
+            @PathVariable("id") final Long id,
+            @PathVariable("pw") final String pw
+    ) {
+        boolean success = studentStore.removeStudent(id,pw);
+
+        if(success == false) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(id);
+    }
+
     // add a student when calling PUT /student/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Student> changeStudent(
@@ -68,6 +83,7 @@ public class StudentController {
 
         if(student.getName() != null) existingUser.setName(student.getName());
         if(student.getGpa() != null) existingUser.setGpa(student.getGpa());
+        if(student.getPw() != null) existingUser.setPw(student.getPw());
         if(student.getId() != null) existingUser.setId(student.getId());
 
         return ResponseEntity.ok(existingUser);

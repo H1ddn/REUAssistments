@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -20,10 +21,22 @@ public final class StudentStore {
     public StudentStore() {
     }
 
+    private Long getUnusedID() {
+        Long prev = 0L;
+        for (Student stu: students)
+        {
+            if(stu.getId() - prev >= 1L) {
+                return prev + 1L;
+            }
+            prev = stu.getId();
+        }
+        return prev + 1L;
+    }
+
     public void addUser(Student student) {
         long nextId;
         if (!this.students.isEmpty()) {
-            nextId = ((Student)this.students.get(this.students.size() - 1)).getId() + 1L;
+            nextId = getUnusedID();
         } else {
             nextId = 1L;
         }
@@ -32,6 +45,23 @@ public final class StudentStore {
         this.students.add(student);
     }
 
+    /**
+     *
+     * @param id: ID of the student you are trying to remove
+     * @param password: Password required to actually remove student
+     * @return True if student was removed, False if student wasn't removed
+     */
+    public boolean removeStudent(Long id, String password){
+        Iterator<Student> i = students.iterator();
+        while (i.hasNext()){
+            Student stu = i.next();
+            if(stu.getId() == id && stu.getPw() == password){
+                i.remove();
+                return true;
+            }
+        }
+        return false;
+    }
     public void removeUser(Student student) {
         this.students.remove(student);
     }
