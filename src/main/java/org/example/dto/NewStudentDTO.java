@@ -1,6 +1,6 @@
 package org.example.dto;
 
-public class NewStudent {
+public class NewStudentDTO {
 
   private String name;
 

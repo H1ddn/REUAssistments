@@ -1,18 +1,16 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.coyote.Response;
-import org.example.dto.NewStudent;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import jakarta.servlet.http.HttpServletRequest;
+import org.example.dto.NewStudentDTO;
 import org.example.model.Student;
 import org.example.model.StudentStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,11 @@ public class StudentController {
         this.studentStore = studentStore;
     }
 
+
+    @GetMapping("/debug2")
+    public ResponseEntity<?> debug(final HttpServletRequest request) {
+        return ResponseEntity.ok(request.getRemoteAddr());
+    }
 
     // Get all students when calling GET /student
     @GetMapping("")
@@ -116,12 +119,12 @@ public class StudentController {
     // create any number of students using POST /student
     @PostMapping("")
     public ResponseEntity<?> createUser(
-            @RequestBody List<NewStudent> studentList
+            @RequestBody List<NewStudentDTO> studentList
     ) throws JsonProcessingException {
         final List<Student> students = new ArrayList<>();
 
         // This is great.
-        for (NewStudent stu: studentList)
+        for (NewStudentDTO stu: studentList)
         {
             final Student student = MAPPER.readValue(MAPPER.writeValueAsString(stu), Student.class);
 
