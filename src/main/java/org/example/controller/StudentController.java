@@ -1,12 +1,19 @@
 package org.example.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.coyote.Response;
+import org.example.dto.NewStudent;
 import org.example.model.Student;
 import org.example.model.StudentStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +26,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/student")
 public class StudentController {
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final StudentStore studentStore;
 
@@ -64,7 +73,16 @@ public class StudentController {
 //            return ResponseEntity.notFound().build();
 //        }
 
-        return ResponseEntity.ok(id);
+        // Does not tell the user whether the deletion was successful.
+//        return ResponseEntity.ok(id);
+
+        // This would make more sense.
+        if(success) {
+            return ResponseEntity.ok(id);
+        } else {
+            // NOT FOUND (404) specifically to not expose anything about the password.
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // add a student when calling PUT /student/{id}
@@ -87,19 +105,50 @@ public class StudentController {
         if(student.getPw() != null) existingUser.setPw(student.getPw());
         if(student.getId() != null) existingUser.setId(student.getId());
 
-        return ResponseEntity.ok(existingUser);
+        // This is fine, but generally with a PUT/PATCH request
+        // we don't return anything.
+//        return ResponseEntity.ok(existingUser);
+
+        // This makes more sense.
+        return ResponseEntity.noContent().build();
     }
 
     // create any number of students using POST /student
     @PostMapping("")
     public ResponseEntity<?> createUser(
-            @RequestBody List<Student> studentList
-    ) {
-        for (Student stu: studentList)
+            @RequestBody List<NewStudent> studentList
+    ) throws JsonProcessingException {
+        final List<Student> students = new ArrayList<>();
+
+        // This is great.
+        for (NewStudent stu: studentList)
         {
-            studentStore.addUser(stu);
+            final Student student = MAPPER.readValue(MAPPER.writeValueAsString(stu), Student.class);
+
+            studentStore.addUser(student);
+
+            students.add(student);
         }
-        return ResponseEntity.created(URI.create("/user/" + studentList.get(0).getId())).build();
+
+        // This causes a problem.
+        // If the API caller sends an empty array,
+        // the size of `studentList` is 0,
+        // therefore, `studentList.get(0)` will throw an exception.
+//        return ResponseEntity.created(URI.create("/user/" + studentList.get(0).getId())).build();
+
+        // Also, it wouldn't make sense to return only the first URL.
+        // The API caller could have specified more-than-one user.
+        // What would make more sense would be to return the generated IDs
+        // or even the entire list of created students.
+
+        final List<Long> newIds = new ArrayList<>();
+
+        for(final Student student : students) {
+            newIds.add(student.getId());
+        }
+
+        return ResponseEntity.created(null)
+            .body(newIds);
     }
 
 
